@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categoria;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,9 +17,13 @@ class CategoriaController extends Controller
         $categoria = Categoria::Create($request->all());
         return response()->json(['Message' => 'Categoría creada', 'Data' => $categoria], 200);
     }
-    public function show(Request $request)
+    public function show($id)
     {
-        $categoria = Categoria::query()->findOrFail($request->get('id'));
-        return response()->json(['Message' => $categoria, 'Data' => $categoria]);
+        try {
+            $categoria = Categoria::findOrFail($id);
+            return response()->json(['Message' => 'Categoría encontrada', 'Data' => $categoria]);
+        } catch (Exception) {
+            return response()->json('Error buscando la categoría',404 );
+        }
     }
 }
